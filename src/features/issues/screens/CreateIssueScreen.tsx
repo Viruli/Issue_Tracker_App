@@ -1,11 +1,15 @@
-import { View, Text, Button } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { useIssueStore } from '../store/issueStore'
-import { TextInput } from 'react-native-gesture-handler';
+import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { useIssueStore } from '../store/issueStore';
 import { MainStackParamList } from '../../../navigation/types';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { IssuePriority, IssueStatus } from '../types';
 import uuid from 'react-native-uuid';
+import { tokens } from '../../../shared/theme/tokens';
+import { Input } from '../../../shared/components/Input';
+import { Button } from '../../../shared/components/Button';
+import { useTheme } from '../../../shared/hooks/useTheme';
+import * as ImagePicker from 'expo-image-picker';
 
 type createProps = NativeStackScreenProps<
   MainStackParamList,
@@ -19,8 +23,21 @@ type editProps = NativeStackScreenProps<
 
 type Props = createProps | editProps;
 
+const statusOptions = [
+  'Open',
+  'In Progress',
+  'Resolved',
+  'Closed',
+] as const;
+
+const priorityOptions = [
+  'Low',
+  'Medium',
+  'High',
+] as const;
 
 const CreateIssueScreen = ({route, navigation} : Props) => {
+  const { palette, toggleTheme, mode } = useTheme();
   const isEdit = route.name === 'EditIssue';
   const issueId = route.params?.id;
   const {addIssue, viewIssue, issue, updateIssue} = useIssueStore();
@@ -30,6 +47,28 @@ const CreateIssueScreen = ({route, navigation} : Props) => {
   const [status, setStatus] = useState<IssueStatus>('Open');
   const [priority, setPriority] = useState<IssuePriority>('Low');
   const [assignee, setAssignee] = useState('');
+  const [imageUri, setImageUri] = useState('');
+
+  const pickImage = async () => {
+  const permission =
+    await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (!permission.granted) {
+    alert('Permission required');
+    return;
+  }
+
+  const result =
+    await ImagePicker.launchImageLibraryAsync({
+      mediaTypes:
+        ImagePicker.MediaTypeOptions.Images,
+      quality: 0.7,
+    });
+
+  if (!result.canceled) {
+    setImageUri(result.assets[0].uri);
+  }
+};
 
   useEffect(() => {
     if(isEdit && issueId){
@@ -44,6 +83,7 @@ const CreateIssueScreen = ({route, navigation} : Props) => {
       setStatus(issue.status)
       setPriority(issue.priority)
       setAssignee(issue.assignee ?? '')
+      setImageUri(issue.imageUri ?? '')
     }
   }, [issue])
 
@@ -57,7 +97,7 @@ const CreateIssueScreen = ({route, navigation} : Props) => {
         status,
         priority,
         assignee,
-        createdAt: issue?.createdAt || new Date().toISOString(),
+        imageUri,
       });
     }else{
     addIssue({
@@ -68,34 +108,197 @@ const CreateIssueScreen = ({route, navigation} : Props) => {
       priority,
       assignee,
       createdAt: new Date().toISOString(),
+      imageUri,
     });
   }
     navigation.goBack();
   };
+return(
+   <View
+      style={{
+        flex: 1,
+        backgroundColor: palette.background,
+      }}
+    >
+      <ScrollView
+        contentContainerStyle={{
+          padding: tokens.spacing.md,
+          paddingBottom: 120,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text
+          style={{
+            ...tokens.typography.title,
+            color: palette.text,
+            marginBottom: tokens.spacing.lg,
+          }}
+        >
+          {isEdit ? 'Edit Issue' : 'Create Issue'}
+        </Text>
 
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>CreateIssueScreen</Text>
-      <Text>Title</Text>
-      <TextInput value={title} onChangeText={setTitle}/>
+        <Input
+          label="Title"
+          value={title}
+          onChangeText={setTitle}
+          placeholder="Enter issue title"
+        />
 
-      <Text>Description</Text>
-      <TextInput value={description} onChangeText={setDescription}/>
+        <Input
+          label="Description"
+          value={description}
+          onChangeText={setDescription}
+          placeholder="Describe the issue"
+        />
 
-      <Text>Status</Text>
-      <Button title="Open" onPress={() => setStatus('Open')} />
-      <Button title="In Progress" onPress={() => setStatus('In Progress')} />
-      <Button title="Resolved" onPress={() => setStatus('Resolved')} />
-      <Button title="Closed" onPress={() => setStatus('Closed')} />
+        <Text
+          style={{
+            color: palette.text,
+            marginBottom: 10,
+            marginTop: 10,
+            fontWeight: '600',
+          }}
+        >
+          Status
+        </Text>
 
-      <Text>Priority</Text>
-      <Button title="Low" onPress={() => setPriority('Low')} />
-      <Button title="Medium" onPress={() => setPriority('Medium')} />
-      <Button title="High" onPress={() => setPriority('High')} />
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            gap: 10,
+            marginBottom: tokens.spacing.lg,
+          }}
+        >
+          {statusOptions.map((item) => {
+            const active = status === item;
 
-      <Text>Asignee</Text>
-      <TextInput value={assignee} onChangeText={setAssignee}/>
-      <Button title="Create Issue" onPress={handleSubmit}/>
+            return (
+              <TouchableOpacity
+                key={item}
+                onPress={() => setStatus(item)}
+                style={{
+                  backgroundColor: active
+                    ? palette.primary
+                    : palette.surface,
+
+                  borderWidth: 1,
+                  borderColor: active
+                    ? palette.primary
+                    : palette.border,
+
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderRadius: tokens.radii.full,
+                }}
+              >
+                <Text
+                  style={{
+                    color: active ? '#fff' : palette.text,
+                    fontWeight: '500',
+                  }}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <Text
+          style={{
+            color: palette.text,
+            marginBottom: 10,
+            fontWeight: '600',
+          }}
+        >
+          Priority
+        </Text>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            gap: 10,
+            marginBottom: tokens.spacing.lg,
+          }}
+        >
+          {priorityOptions.map((item) => {
+            const active = priority === item;
+
+            return (
+              <TouchableOpacity
+                key={item}
+                onPress={() => setPriority(item)}
+                style={{
+                  backgroundColor: active
+                    ? palette.primary
+                    : palette.surface,
+
+                  borderWidth: 1,
+                  borderColor: active
+                    ? palette.primary
+                    : palette.border,
+
+                  paddingVertical: 10,
+                  paddingHorizontal: 14,
+                  borderRadius: tokens.radii.full,
+                }}
+              >
+                <Text
+                  style={{
+                    color: active ? '#fff' : palette.text,
+                    fontWeight: '500',
+                  }}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <Input
+          label="Assignee"
+          value={assignee}
+          onChangeText={setAssignee}
+          placeholder="Assign to someone"
+        />
+
+        <Button
+  title="Attach Image"
+  onPress={pickImage}
+/>
+
+{imageUri ? (
+  <Image
+    source={{ uri: imageUri }}
+    style={{
+      width: '100%',
+      height: 200,
+      borderRadius: tokens.radii.lg,
+      marginTop: tokens.spacing.md,
+    }}
+    resizeMode="cover"
+  />
+) : null}
+      </ScrollView>
+
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          width: '100%',
+          padding: tokens.spacing.md,
+          backgroundColor: palette.background,
+          borderTopWidth: 1,
+          borderTopColor: palette.border,
+        }}
+      >
+        <Button
+          title={isEdit ? 'Update Issue' : 'Create Issue'}
+          onPress={handleSubmit}
+        />
+      </View>
     </View>
   )
 }

@@ -2,19 +2,17 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import LoginScreen from '../features/auth/screens/LoginScreen'
+import { AuthStackParamList } from './types';
 
-const Stack = createNativeStackNavigator();
 
-type Props = {
-  onLogin: () => void;
-};
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-const AuthNavigator = ({onLogin} : Props) => {
+const AuthNavigator = () => {
+  
     return (
-    <Stack.Navigator>
-        <Stack.Screen name="Login">
-            {() => <LoginScreen onLogin={onLogin} />}
-        </Stack.Screen>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Login" component={LoginScreen}/>
+
     </Stack.Navigator>
   )
 }

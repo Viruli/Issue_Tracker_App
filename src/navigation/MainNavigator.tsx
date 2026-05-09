@@ -5,12 +5,17 @@ import IssueListScreen from '../features/issues/screens/IssueListScreen'
 import CreateIssueScreen from '../features/issues/screens/CreateIssueScreen';
 import { MainStackParamList } from './types';
 import IssueDetailsScreen from '../features/issues/screens/IssueDetailsScreen';
+import BottomTabNavigator from './BottomTabNavigator';
 
 const Stack = createNativeStackNavigator<MainStackParamList>();
 
 const MainNavigator = () => {
   return (
     <Stack.Navigator>
+        <Stack.Screen
+          name="Dashboard"
+          component={BottomTabNavigator}
+        />
         <Stack.Screen 
             name="IssueList"
             component={IssueListScreen}

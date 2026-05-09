@@ -5,8 +5,8 @@ import {Issue} from "../types"
 // Create Issue
 export const createIssueRepo = (issue : Issue) => {
     db.runSync(
-        `INSERT INTO issues (id, title, description, status, priority, assignee, createdAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO issues (id, title, description, status, priority, assignee, createdAt, imageUri)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             issue.id,
             issue.title,
@@ -14,7 +14,8 @@ export const createIssueRepo = (issue : Issue) => {
             issue.status,
             issue.priority,
             issue.assignee ?? null,
-            issue.createdAt
+            issue.createdAt,
+            issue.imageUri ?? null,
         ]
     );
 }
@@ -31,29 +32,31 @@ export const getIssueRepo = (id : string) : Issue | null => {
     return result as Issue | null;
 }
 
-// update Issue 
-export const updateIssueRepo = (id: string, issue: Partial<Issue>) => {
-  db.runSync(
-    `
-    UPDATE issues
-    SET
-      title = ?,
-      description = ?,
-      status = ?,
-      priority = ?,
-      assignee = ?
-    WHERE id = ?
-    `,
-    [
-      issue.title ?? '',
-      issue.description ?? '',
-      issue.status ?? 'Open',
-      issue.priority ?? 'Low',
-      issue.assignee ?? null,
-      id,
-    ]
-  );
-};
+  // update Issue 
+  export const updateIssueRepo = (id: string, issue: Partial<Issue>) => {
+    db.runSync(
+      `
+      UPDATE issues
+      SET
+        title = ?,
+        description = ?,
+        status = ?,
+        priority = ?,
+        assignee = ?,
+        imageUri = ?
+      WHERE id = ?
+      `,
+      [
+        issue.title ?? '',
+        issue.description ?? '',
+        issue.status ?? 'Open',
+        issue.priority ?? 'Low',
+        issue.assignee ?? null,
+        issue.imageUri ?? '',
+        id,
+      ]
+    );
+  };
 
 //Delete Issue
 export const deleteIssueRepo = (id:string) => {
