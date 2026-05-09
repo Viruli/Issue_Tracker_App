@@ -7,11 +7,12 @@ const initDB = () => {
             title TEXT NOT NULL,
             description TEXT,
             status TEXT DEFAULT "Open"
-                CHECK(status IN ('Open', 'In Progress', 'Resolved')),
+                CHECK(status IN ('Open', 'In Progress', 'Resolved', 'Closed')),
             priority TEXT DEFAULT "Low"
                 CHECK(priority IN ('Low', 'Medium', 'High')),
             assignee TEXT,
-            createdAt TEXT
+            createdAt TEXT,
+            imageUri TEXT
         )
     `)
 }

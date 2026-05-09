@@ -18,7 +18,12 @@ type IssueStore = {
     updateIssue: (id:string, updateIssue: UpdatedIssue) => Promise<void>;
     retrySyncQueue: () => Promise<void>;
     clearError: () => void;
-    
+    getIssueStats: () => {
+    all: number;
+    open: number;
+    inProgress: number;
+    resolved: number;
+  };
 }
 
 export const useIssueStore = create<IssueStore> ((set, get) => ({
@@ -176,53 +181,41 @@ export const useIssueStore = create<IssueStore> ((set, get) => ({
         
     },
 
-    updateIssue:async (id, updatedData) => {
-        try{
-            //local db
-            updateIssueRepo(id, updatedData);
+    updateIssue: async (id, updatedData) => {
+  try {
+    // 1. UPDATE LOCAL DB (source of truth)
+    updateIssueRepo(id, updatedData);
 
-            //update UI
-            set((state) => ({
-                issues: state.issues.map(
-                    (issue) =>
-                    issue.id === id
-                ? {
-                    ...issue,
-                    ...updatedData,
-                  }
-                : issue
-            ),
+    // 2. UPDATE UI STATE
+    set((state) => ({
+      issues: state.issues.map((issue) =>
+        issue.id === id
+          ? { ...issue, ...updatedData }
+          : issue
+      ),
 
-            issue:
-                state.issue?.id === id
-                ? {
-                  ...state.issue,
-                  ...updatedData,
-                }
-                : state.issue,
-            }));
+      issue:
+        state.issue?.id === id
+          ? { ...state.issue, ...updatedData }
+          : state.issue,
+    }));
 
-            //update through api
-            await issueApi.updateIssue(id, updatedData);
+  } catch (error) {
+    console.log('Local update failed:', error);
+  }
 
-        }catch(error){
-            const queueItem : SyncQueueItem = {
-                id: uuid.v4().toString(),
-                type: 'UPDATE',
-                payload: {id, ...updatedData},
-                createdAt: new Date().toISOString(),
-            };
+  // 3. ADD TO SYNC QUEUE (NO API CALL)
+  const queueItem: SyncQueueItem = {
+    id: uuid.v4().toString(),
+    type: 'UPDATE',
+    payload: { id, ...updatedData },
+    createdAt: new Date().toISOString(),
+  };
 
-            set((state) => ({
-                syncQueue: [
-                    ...state.syncQueue, 
-                    queueItem,
-                ],
-                error: 'Update saved locally. Sync pending.'
-            }));
-            console.log(error);
-        }      
-    },
+  set((state) => ({
+    syncQueue: [...state.syncQueue, queueItem],
+  }));
+},
 
     //retry sync operations if failed
     retrySyncQueue: async() => {
@@ -253,5 +246,15 @@ export const useIssueStore = create<IssueStore> ((set, get) => ({
 
         set({syncQueue: remainingQueue,});
 
+    },
+    getIssueStats: () => {
+        const issues = get().issues;
+
+        return {
+            all: issues.length,
+            open: issues.filter(i => i.status === 'Open').length,
+            inProgress: issues.filter(i => i.status === 'In Progress').length,
+            resolved: issues.filter(i => i.status === 'Resolved').length,
+        };
     },
 }))

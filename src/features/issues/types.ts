@@ -19,6 +19,7 @@ export interface Issue{
     priority: IssuePriority;
     assignee?: string;
     createdAt: string;
+    imageUri?: string;
 }
 
 export type syncActionTyp = 

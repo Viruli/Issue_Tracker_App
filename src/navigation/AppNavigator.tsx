@@ -1,17 +1,16 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import {NavigationContainer} from '@react-navigation/native';
-import AuthNavigator from "./AuthNavigator";
+import { NavigationContainer } from '@react-navigation/native';
+import AuthNavigator from './AuthNavigator';
 import MainNavigator from './MainNavigator';
+import { useAuthStore } from '../features/auth/store/authStore';
 
 const AppNavigator = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useAuthStore((s) => s.isAuthenticated);
 
   return (
     <NavigationContainer>
-        {isLoggedIn ?( <MainNavigator/> ):( <AuthNavigator onLogin={() => setIsLoggedIn(true)}/>)}
+      {isLoggedIn ? <MainNavigator /> : <AuthNavigator />}
     </NavigationContainer>
-  )
-}
+  );
+};
 
-export default AppNavigator
+export default AppNavigator;
