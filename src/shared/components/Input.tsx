@@ -1,24 +1,15 @@
-import React from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TextInputProps,
-} from 'react-native';
+import React from "react";
+import { View, Text, TextInput, TextInputProps } from "react-native";
 
-import { useTheme } from '../hooks/useTheme';
-import { tokens } from '../theme/tokens';
+import { useTheme } from "../hooks/useTheme";
+import { tokens } from "../theme/tokens";
 
 type Props = TextInputProps & {
   label?: string;
   error?: string;
 };
 
-export const Input = ({
-  label,
-  error,
-  ...props
-}: Props) => {
+export const Input = ({ label, error, ...props }: Props) => {
   const { palette } = useTheme();
 
   return (
@@ -49,9 +40,7 @@ export const Input = ({
           {
             backgroundColor: palette.surface,
             borderWidth: 1,
-            borderColor: error
-              ? palette.danger
-              : palette.border,
+            borderColor: error ? palette.danger : palette.border,
 
             borderRadius: tokens.radii.md,
 
@@ -67,7 +56,7 @@ export const Input = ({
 
           props.multiline && {
             minHeight: 120,
-            textAlignVertical: 'top',
+            textAlignVertical: "top",
           },
 
           props.style,

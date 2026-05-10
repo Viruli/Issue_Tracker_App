@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import {
   TouchableOpacity,
@@ -6,10 +6,10 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
-} from 'react-native';
+} from "react-native";
 
-import { useTheme } from '../hooks/useTheme';
-import { tokens } from '../theme/tokens';
+import { useTheme } from "../hooks/useTheme";
+import { tokens } from "../theme/tokens";
 
 type Props = {
   title: string;
@@ -45,8 +45,8 @@ export const Button = ({
 
           borderRadius: tokens.radii.md,
 
-          justifyContent: 'center',
-          alignItems: 'center',
+          justifyContent: "center",
+          alignItems: "center",
 
           ...tokens.shadows.sm,
 
@@ -62,7 +62,7 @@ export const Button = ({
         <Text
           style={[
             {
-              color: '#fff',
+              color: "#fff",
               fontSize: tokens.fontSizes.md,
               fontWeight: tokens.fontWeights.semibold,
             },

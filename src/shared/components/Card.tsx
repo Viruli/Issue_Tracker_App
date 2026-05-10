@@ -1,7 +1,7 @@
-import React from 'react';
-import { View } from 'react-native';
-import { useTheme } from '../hooks/useTheme';
-import { tokens } from '../theme/tokens';
+import React from "react";
+import { View } from "react-native";
+import { useTheme } from "../hooks/useTheme";
+import { tokens } from "../theme/tokens";
 
 export const Card = ({ children }: { children: React.ReactNode }) => {
   const { palette } = useTheme();

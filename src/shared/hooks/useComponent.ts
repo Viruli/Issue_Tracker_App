@@ -1,4 +1,4 @@
-import { Alert } from 'react-native';
+import { Alert } from "react-native";
 
 type ConfirmOptions = {
   title?: string;
@@ -10,16 +10,16 @@ type ConfirmOptions = {
 
 export const useConfirm = () => {
   const confirm = ({
-    title = 'Confirm',
+    title = "Confirm",
     message,
-    confirmText = 'Yes',
-    cancelText = 'Cancel',
+    confirmText = "Yes",
+    cancelText = "Cancel",
     onConfirm,
   }: ConfirmOptions) => {
     Alert.alert(title, message, [
       {
         text: cancelText,
-        style: 'cancel',
+        style: "cancel",
       },
       {
         text: confirmText,
