@@ -1,7 +1,5 @@
 export const tokens = {
-  // =========================
-  // SPACING SYSTEM
-  // =========================
+  // Spacing System
   spacing: {
     xs: 4,
     sm: 8,
@@ -11,9 +9,7 @@ export const tokens = {
     xxl: 48,
   },
 
-  // =========================
-  // BORDER RADIUS SYSTEM
-  // =========================
+  // Boder Radius
   radii: {
     xs: 4,
     sm: 6,
@@ -24,9 +20,7 @@ export const tokens = {
     full: 9999,
   },
 
-  // =========================
-  // TYPOGRAPHY SCALE
-  // =========================
+  // Fonts Sizes
   fontSizes: {
     xs: 11,
     sm: 13,
@@ -37,9 +31,7 @@ export const tokens = {
     display: 32,
   },
 
-  // =========================
-  // FONT WEIGHTS
-  // =========================
+  // Font Weights
   fontWeights: {
     regular: '400' as const,
     medium: '500' as const,
@@ -47,20 +39,7 @@ export const tokens = {
     bold: '700' as const,
   },
 
-  // =========================
-  // LINE HEIGHTS (important for readability)
-  // =========================
-  lineHeights: {
-    xs: 16,
-    sm: 18,
-    md: 22,
-    lg: 26,
-    xl: 30,
-  },
-
-  // =========================
-  // SHADOW SYSTEM
-  // =========================
+  // Shadow System
   shadows: {
     xs: {
       shadowColor: '#000',
@@ -95,30 +74,7 @@ export const tokens = {
     },
   },
 
-  // =========================
-  // OPACITY SYSTEM
-  // =========================
-  opacity: {
-    disabled: 0.4,
-    muted: 0.6,
-    medium: 0.8,
-    full: 1,
-  },
-
-  // =========================
-  // Z-INDEX SYSTEM
-  // =========================
-  zIndex: {
-    base: 0,
-    dropdown: 10,
-    sticky: 20,
-    modal: 50,
-    toast: 100,
-  },
-
-  // =========================
-  // COMPONENT SIZES
-  // =========================
+  // Component Height
   sizes: {
     buttonHeight: 48,
     inputHeight: 50,
@@ -127,9 +83,7 @@ export const tokens = {
     iconLg: 32,
   },
 
-  // =========================
-  // TYPOGRAPHY PRESETS (VERY USEFUL)
-  // =========================
+  // Typography
   typography: {
     title: {
       fontSize: 20,

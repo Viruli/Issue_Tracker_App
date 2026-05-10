@@ -17,4 +17,4 @@ export interface ThemePalette {
   warningLight: string;
 }
 
-export type ThemeMode = 'light' | 'dark';
+export type ThemeMode = "light" | "dark";

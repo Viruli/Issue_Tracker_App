@@ -1,7 +1,7 @@
 import db from "./sqlite";
 
 const initDB = () => {
-    db.execSync(`
+  db.execSync(`
         CREATE TABLE IF NOT EXISTS issues(
             id TEXT PRIMARY KEY,
             title TEXT NOT NULL,
@@ -14,7 +14,7 @@ const initDB = () => {
             createdAt TEXT,
             imageUri TEXT
         )
-    `)
-}
+    `);
+};
 
 export default initDB;
