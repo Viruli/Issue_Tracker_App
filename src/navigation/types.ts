@@ -1,6 +1,11 @@
+export type AuthStackParamList = {
+  Login: undefined;
+};
+
 export type MainStackParamList = {
-    IssueList: undefined;
-    CreateIssue: undefined;
-    IssueDetails: {id: string};
-    EditIssue: {id: string};
-}
+  MainTabs: undefined;
+  IssueList: undefined;
+  CreateIssue: undefined;
+  IssueDetails: { id: string };
+  EditIssue: { id: string };
+};
